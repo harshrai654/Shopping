@@ -34,16 +34,18 @@ const Navbar = (props) => {
       <GenForm
         title="Login"
         end="login"
+        type={0}
         visibility={loginState}
         onCancel={() => setLoginState(!loginState)}
-        onLoggedIn={props.onLoggedIn}
+        onLoggedIn={(token) => props.onLoggedIn(token, 0)}
       />
       <GenForm
         title="Seller Login"
         end="sellerlogin"
+        type={1}
         visibility={sellerLoginState}
         onCancel={() => setSellerLoginState(!sellerLoginState)}
-        onLoggedIn={props.onLoggedIn}
+        onLoggedIn={(token) => props.onLoggedIn(token, 1)}
       />
     </>
   );

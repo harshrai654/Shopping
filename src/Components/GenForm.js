@@ -31,7 +31,7 @@ const GenForm = (props) => {
                     setError(false);
                     props.onCancel();
                     props.onLoggedIn(res.data.token);
-                    utils.saveToken(res.data.token);
+                    utils.saveToken(res.data.token, props.type);
                   }
                 })
                 .catch(() => {
