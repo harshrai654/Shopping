@@ -1,35 +1,18 @@
-import { Modal, Button, Form, Input } from "antd";
+import React from "react";
+import { Modal, Form, Input, Alert } from "antd";
+import utils from "../utils";
 
 const GenForm = (props) => {
-  //   const [visible, setVisible] = React.useState(false);
-  //   const [confirmLoading, setConfirmLoading] = React.useState(false);
-  //   const [modalText, setModalText] = React.useState('Content of the modal');
-
-  //   const showModal = () => {
-  //     setVisible(true);
-  //   };
-
-  //   const handleOk = () => {
-  //     setModalText('The modal will be closed after two seconds');
-  //     setConfirmLoading(true);
-  //     setTimeout(() => {
-  //       setVisible(false);
-  //       setConfirmLoading(false);
-  //     }, 2000);
-  //   };
-
-  //   const handleCancel = () => {
-  //     console.log('Clicked cancel button');
-  //     setVisible(false);
-  //   };
+  const [confirmLoading, setConfirmLoading] = React.useState(false);
+  const [error, setError] = React.useState(false);
   const [form] = Form.useForm();
+
   return (
     <>
       <Modal
         title={props.title}
         visible={props.visibility}
-        // onOk={handleOk}
-        // confirmLoading={confirmLoading}
+        confirmLoading={confirmLoading}
         cancelText="Close"
         okText="Login"
         onCancel={props.onCancel}
@@ -37,34 +20,49 @@ const GenForm = (props) => {
           form
             .validateFields()
             .then((values) => {
+              setConfirmLoading(true);
               form.resetFields();
-              console.log(values);
+
+              utils
+                .login(props.end, values)
+                .then((res) => {
+                  setConfirmLoading(false);
+                  if (res.status === 200) {
+                    setError(false);
+                    props.onCancel();
+                    props.onLoggedIn(res.data.token);
+                    utils.saveToken(res.data.token);
+                  }
+                })
+                .catch(() => {
+                  setConfirmLoading(false);
+                  setError(true);
+                });
             })
             .catch((info) => {
               console.log("Validate Failed:", info);
             });
         }}
       >
-        <Form
-          form={form}
-          name={props.title}
-          onFinish={(values) => console.log(values)}
-        >
+        {error && <Alert message="Invalid Email or password" type="error" />}
+        <br />
+        <Form form={form} name={props.title}>
           <Form.Item
             label="Email"
             name="email"
             rules={[
               {
                 required: true,
+                type: "email",
                 message: "Please input your email!",
               },
             ]}
           >
-            <Input type="email" />
+            <Input />
           </Form.Item>
           <Form.Item
             label="Password"
-            name="password"
+            name="pass"
             rules={[
               {
                 required: true,

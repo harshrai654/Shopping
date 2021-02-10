@@ -7,6 +7,7 @@
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.6.3",
     "antd": "^4.12.2",
+    "axios": "^0.21.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
@@ -14,7 +15,11 @@
     "web-vitals": "^1.1.0"
   },
   "scripts": {
+    "portkillServer": "fuser -k 4080/tcp",
+    "portkillReact": "fuser -k 3000/tcp",
+    "server": "PORT=4080 nodemon ../backend/app.js",
     "start": "react-scripts start",
+    "dev": "run-p portkillServer portkillReact server start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -36,5 +41,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "proxy": "http://localhost:4080",
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
   }
 }
