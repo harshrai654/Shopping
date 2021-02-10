@@ -1,10 +1,15 @@
-import NewUser from "./Pages/NewUser";
+import Home from "./Pages/Home";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 function App() {
   return (
-    <>
-      <NewUser />
-    </>
+    <BrowserRouter>
+      <Switch>
+        <Route path="/" exact>
+          <Home />
+        </Route>
+      </Switch>
+    </BrowserRouter>
   );
 }
 
