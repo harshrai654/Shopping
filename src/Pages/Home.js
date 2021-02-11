@@ -7,7 +7,7 @@ import utils from "../utils";
 const Home = (props) => {
   const [tokenData, setToken] = useState({
     token: localStorage.getItem("token"),
-    type: localStorage.getItem("type"),
+    type: parseInt(localStorage.getItem("type")),
   });
   return (
     <>
