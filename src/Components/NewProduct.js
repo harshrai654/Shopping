@@ -1,7 +1,35 @@
-import { Form, Input, Spin, InputNumber, Upload, Modal, Button } from "antd";
+import {
+  Form,
+  Input,
+  Spin,
+  InputNumber,
+  Upload,
+  Modal,
+  Button,
+  Alert,
+} from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import utils from "../utils";
+
+const getStatusComponent = (status) => {
+  switch (status) {
+    case -1:
+      return (
+        <Button type="primary" htmlType="submit">
+          Add Product
+        </Button>
+      );
+    case 0:
+      return <Spin />;
+    case 1:
+      return <Alert message="Something went wrong!" type="error" />;
+    case 2:
+      return <Alert message="Product Added successfully!" type="success" />;
+    default:
+      return <Spin />;
+  }
+};
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -34,12 +62,19 @@ const NewProduct = () => {
   });
 
   const [fileList, setFileState] = useState([]);
-  const [loading, setLoading] = useState(false);
-
+  const [status, setStatus] = useState(-1);
   return (
     <Form
       layout="vertical"
-      onFinish={(values) => utils.addProduct(values, fileList)}
+      onFinish={(values) => {
+        setStatus(0);
+        utils.addProduct(values, fileList).then((res) => {
+          setStatus(1);
+          if (res.status === 200) {
+            setStatus(2);
+          }
+        });
+      }}
     >
       <Form.Item
         label="Product Name"
@@ -71,17 +106,15 @@ const NewProduct = () => {
         type="number"
         rules={[{ required: true, message: "Please enter amount!" }]}
       >
-        <InputNumber step={0.5} />
+        <InputNumber min={0} step={0.5} />
       </Form.Item>
       <br />
       <Form.Item
         label="Images"
-        name="img"
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
         <Upload
-          maxCount={1}
           listType="picture-card"
           fileList={fileList}
           onPreview={async (file) => {
@@ -96,10 +129,13 @@ const NewProduct = () => {
                 file.name || file.url.substring(file.url.lastIndexOf("/") + 1),
             });
           }}
-          onChange={({ fileList }) => setFileState(fileList)}
+          onChange={({ fileList }) => {
+            console.log(fileList);
+            setFileState(fileList);
+          }}
           beforeUpload={() => false}
         >
-          {fileList.length >= 8 ? null : uploadButton}
+          {fileList.length >= 8 || !status ? null : uploadButton}
         </Upload>
         <Modal
           visible={preview.visible}
@@ -115,15 +151,7 @@ const NewProduct = () => {
           <img alt="p" style={{ width: "100%" }} src={preview.image} />
         </Modal>
       </Form.Item>
-      <Form.Item>
-        {!loading ? (
-          <Button type="primary" htmlType="submit">
-            Add Product
-          </Button>
-        ) : (
-          <Spin />
-        )}
-      </Form.Item>
+      <Form.Item>{getStatusComponent(status)}</Form.Item>
     </Form>
   );
 };

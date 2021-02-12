@@ -21,25 +21,25 @@ const utils = {
     }
   },
 
-  addProduct: (formData, fileList) => {
+  addProduct: (productData, fileList) => {
+    let formData = new FormData();
     const token = localStorage.getItem("token");
 
-    const files = fileList.map((file) => ({
-      data: file.thumbUrl,
-    }));
-    const data = {
-      formData,
-      files,
-    };
-    axios
-      .post("/add/product", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: "Bearer " + token,
-        },
-      })
-      .then((res) => res.data)
-      .catch((err) => console.error(err));
+    //Appending images to formdata
+    fileList.forEach((file) => {
+      formData.append("images", file.originFileObj);
+    });
+
+    //Appending product data to formdata
+    for (let key in productData) {
+      formData.append(key, productData[key]);
+    }
+
+    return axios.post("/seller/product", formData, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
   },
 };
 
