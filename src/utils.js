@@ -41,6 +41,12 @@ const utils = {
       },
     });
   },
+
+  fetchProducts: () =>
+    axios
+      .get("/api/products")
+      .then((res) => res.data)
+      .catch((err) => console.error(err)),
 };
 
 export default utils;
