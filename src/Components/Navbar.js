@@ -1,27 +1,35 @@
 import { useState } from "react";
-import { PageHeader, Button } from "antd";
+import { PageHeader, Button, Badge } from "antd";
+import { ShoppingCartOutlined } from "@ant-design/icons";
 import GenForm from "./GenForm";
 
 const Navbar = (props) => {
   const [loginState, setLoginState] = useState(false);
   const [sellerLoginState, setSellerLoginState] = useState(false);
-  const loginActions = props.token ? (
-    <Button onClick={props.onLogOut} type="text">
-      LogOut
-    </Button>
-  ) : (
-    [
-      <Button onClick={() => setLoginState(!loginState)} type="text" key="0">
-        Login
-      </Button>,
-      <Button
-        onClick={() => setSellerLoginState(!sellerLoginState)}
-        type="text"
-        key="1"
-      >
-        Seller Login
-      </Button>,
-    ]
+
+  const loginActions = props.token
+    ? [
+        <Button onClick={props.onLogOut} type="text">
+          LogOut
+        </Button>,
+      ]
+    : [
+        <Button onClick={() => setLoginState(!loginState)} type="text" key="0">
+          Login
+        </Button>,
+        <Button
+          onClick={() => setSellerLoginState(!sellerLoginState)}
+          type="text"
+          key="1"
+        >
+          Seller Login
+        </Button>,
+      ];
+
+  loginActions.push(
+    <Badge count={props.cartState.length}>
+      <ShoppingCartOutlined style={{ fontSize: "24px" }} />
+    </Badge>
   );
   return (
     <>
