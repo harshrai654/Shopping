@@ -47,6 +47,10 @@ const utils = {
       .get("/api/products")
       .then((res) => res.data)
       .catch((err) => console.error(err)),
+
+  updateCart: (cart) => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  },
 };
 
 export default utils;

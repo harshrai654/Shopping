@@ -1,4 +1,4 @@
-import { Row, Col, Carousel, Image, Button } from "antd";
+import { Row, Col, Carousel, Image, Button, Form, InputNumber } from "antd";
 
 const ProductPage = (props) => {
   const product = props.location.state.product;
@@ -15,9 +15,25 @@ const ProductPage = (props) => {
         </Carousel>
       </Col>
       <Col flex={1} offset={1}>
-        <Button type="primary" onClick={() => props.updateCart(product)}>
-          Add to Cart
-        </Button>
+        <Form
+          onFinish={(values) => {
+            let quantity = values.quantity ? values.quantity : 1;
+            props.updateCart({ ...product, quantity });
+          }}
+        >
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={!product.quantity}
+            >
+              {product.quantity ? "Add to Cart" : "Out of Stock"}
+            </Button>
+          </Form.Item>
+          <Form.Item label="Quantity" name="quantity" type="number">
+            <InputNumber min={1} max={product.quantity} defaultValue={1} />
+          </Form.Item>
+        </Form>
       </Col>
     </Row>
   );

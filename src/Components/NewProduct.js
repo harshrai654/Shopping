@@ -108,6 +108,14 @@ const NewProduct = () => {
       >
         <InputNumber min={0} step={0.5} />
       </Form.Item>
+      <Form.Item
+        label="Quantity"
+        name="quantity"
+        type="number"
+        rules={[{ required: true, message: "Please enter quantity!" }]}
+      >
+        <InputNumber min={1} />
+      </Form.Item>
       <br />
       <Form.Item
         label="Images"

@@ -70,10 +70,11 @@ const Home = () => {
             render={(props) => (
               <ProductPage
                 updateCart={(product) => {
-                  if (cartState.find((e) => product === e)) {
+                  if (cartState.find((e) => product._id === e._id)) {
                     setCartUpdate(-1);
                   } else {
                     setCartState([...cartState, product]);
+                    utils.updateCart([...cartState, product]);
                     setCartUpdate(1);
                   }
                 }}

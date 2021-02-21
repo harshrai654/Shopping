@@ -24,7 +24,7 @@ const ProductsGrid = () => {
 
   useEffect(() => {
     utils.fetchProducts().then((productsData) => {
-      console.log(productsData);
+      // console.log(productsData);
       setProductsState(productsData);
     });
   }, []);
@@ -32,6 +32,7 @@ const ProductsGrid = () => {
     <>
       {selectedProduct ? (
         <Redirect
+          push
           to={{
             pathname: "/product",
             state: { product: selectedProduct },
