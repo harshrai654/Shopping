@@ -18,7 +18,7 @@ const ProductPage = (props) => {
         <Form
           onFinish={(values) => {
             let quantity = values.quantity ? values.quantity : 1;
-            props.updateCart({ ...product, quantity });
+            props.updateCart({ ...product, quantity, stock: product.quantity });
           }}
         >
           <Form.Item>
