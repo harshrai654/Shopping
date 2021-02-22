@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Row, Divider, Alert } from "antd";
+import { Switch, Route, Redirect } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import utils from "../utils";
 import SellerDashboard from "./SellerDashboard";
 import ProductsGrid from "./ProductsGrid";
 import ProductPage from "./ProductPage";
-import { Switch, Route, Redirect } from "react-router-dom";
+import Cart from "./Cart";
 
 const Home = () => {
   const [tokenData, setToken] = useState({
@@ -14,7 +15,9 @@ const Home = () => {
   });
 
   let prevCart = localStorage.getItem("cart");
-  prevCart = prevCart ? JSON.parse(prevCart) : [];
+  prevCart = prevCart
+    ? JSON.parse(prevCart)
+    : { items: [], order: { amount: 0 } };
   const [cartState, setCartState] = useState(prevCart);
   const [cartUpdate, setCartUpdate] = useState(0);
 
@@ -70,11 +73,15 @@ const Home = () => {
             render={(props) => (
               <ProductPage
                 updateCart={(product) => {
-                  if (cartState.find((e) => product._id === e._id)) {
+                  if (cartState.items.find((e) => product._id === e._id)) {
                     setCartUpdate(-1);
                   } else {
-                    setCartState([...cartState, product]);
-                    utils.updateCart([...cartState, product]);
+                    let items = [...cartState.items, product];
+                    let order = cartState.order;
+                    order.amount += product.quantity * product.price;
+
+                    setCartState({ items, order });
+                    utils.updateCart({ items, order });
                     setCartUpdate(1);
                   }
                 }}
@@ -82,6 +89,9 @@ const Home = () => {
               />
             )}
           />
+          <Route path="/cart" exact>
+            <Cart cartState={cartState} setCartState={setCartState} />
+          </Route>
         </Switch>
       </Row>
     </>
