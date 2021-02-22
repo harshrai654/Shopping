@@ -2,6 +2,7 @@ import { useState } from "react";
 import { PageHeader, Button, Badge } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import GenForm from "./GenForm";
+import { Link } from "react-router-dom";
 
 const Navbar = (props) => {
   const [loginState, setLoginState] = useState(false);
@@ -27,9 +28,15 @@ const Navbar = (props) => {
       ];
 
   loginActions.push(
-    <Badge count={props.cartState.length}>
-      <ShoppingCartOutlined style={{ fontSize: "24px" }} />
-    </Badge>
+    <Link
+      to={{
+        pathname: "cart",
+      }}
+    >
+      <Badge count={props.cartState.items.length}>
+        <ShoppingCartOutlined style={{ fontSize: "24px" }} />
+      </Badge>
+    </Link>
   );
   return (
     <>
