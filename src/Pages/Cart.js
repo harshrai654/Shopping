@@ -33,7 +33,7 @@ const Cart = (props) => {
                         order.amount +=
                           (value - items[index].quantity) * product.price;
                         items[index].quantity = value;
-                        props.setCartState({ items, order });
+                        props.updateCart({ items, order });
                         utils.updateCart(items, order, props.tokenData);
                       }}
                     />
@@ -49,7 +49,7 @@ const Cart = (props) => {
                       let order = cartState.order;
                       order.amount -= product.quantity * product.price;
 
-                      props.setCartState({ items, order });
+                      props.updateCart({ items, order });
                       utils.updateCart(items, order, props.tokenData);
                     }}
                   >

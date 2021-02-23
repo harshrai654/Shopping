@@ -92,6 +92,7 @@ const Home = () => {
           <Route path="/cart" exact>
             <Cart
               cartState={cartState}
+              updateCart={(cart) => setCartState(cart)}
               setCartState={() => setCartState(utils.getCartState())}
               tokenData={tokenData}
               onLoggedIn={(token, type) => setToken({ token, type })}
