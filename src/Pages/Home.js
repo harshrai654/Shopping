@@ -27,17 +27,16 @@ const Home = () => {
       {tokenData && tokenData.token && tokenData.type === 1 && (
         <Redirect to="/seller" />
       )}
-      {tokenData && tokenData.token && tokenData.type === 0 && (
-        <Redirect to="/shop" />
-      )}
       <Row>
         <Navbar
           cartState={cartState}
-          setCartState={setCartState}
+          setCartState={(cart) => setCartState(cart)}
           token={tokenData ? tokenData.token : null}
+          type={tokenData ? tokenData.type : 0}
           onLoggedIn={(token, type) => setToken({ token, type })}
           onLogOut={() => {
             utils.removeToken();
+            setCartState({ items: [], order: { amount: 0 } });
             setToken(null);
           }}
         />
@@ -81,7 +80,7 @@ const Home = () => {
                     order.amount += product.quantity * product.price;
 
                     setCartState({ items, order });
-                    utils.updateCart({ items, order });
+                    utils.updateCart({ items, order }, tokenData);
                     setCartUpdate(1);
                   }
                 }}
@@ -90,7 +89,12 @@ const Home = () => {
             )}
           />
           <Route path="/cart" exact>
-            <Cart cartState={cartState} setCartState={setCartState} />
+            <Cart
+              cartState={cartState}
+              setCartState={setCartState}
+              tokenData={tokenData}
+              onLoggedIn={(token, type) => setToken({ token, type })}
+            />
           </Route>
         </Switch>
       </Row>

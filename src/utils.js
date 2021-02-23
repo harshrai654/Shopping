@@ -1,7 +1,16 @@
 import axios from "axios";
 
 const utils = {
-  login: (end, data) => axios.post(`/auth/${end}`, data),
+  login: (end, data) => {
+    let cart = localStorage.getItem("cart");
+    if (cart) {
+      cart = JSON.parse(cart);
+      data = { ...data, cart };
+    } else {
+      data = { ...data, cart: { items: [], order: { amount: 0 } } };
+    }
+    return axios.post(`/auth/${end}`, data);
+  },
   saveToken: (token, type) => {
     localStorage.setItem("token", token);
     localStorage.setItem("type", type);
@@ -9,6 +18,7 @@ const utils = {
   removeToken: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("type");
+    localStorage.removeItem("cart");
   },
   auth: async () => {
     const token = localStorage.getItem("token");
@@ -48,8 +58,19 @@ const utils = {
       .then((res) => res.data)
       .catch((err) => console.error(err)),
 
-  updateCart: (cart) => {
+  updateCart: (cart, tokenData) => {
     localStorage.setItem("cart", JSON.stringify(cart));
+    if (tokenData) {
+      return axios.post("/customer/cart", cart, {
+        headers: {
+          Authorization: "Bearer " + tokenData.token,
+        },
+      });
+    }
+  },
+
+  getCartState: () => {
+    return localStorage.getItem("cart");
   },
 };
 

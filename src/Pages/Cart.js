@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Row, Col, List, InputNumber, Space, Button } from "antd";
 import utils from "../utils";
+import GenForm from "../Components/GenForm";
 
 const Cart = (props) => {
   let cartState = props.cartState ||
     utils.getCartState() || { items: [], order: { amount: 0 } };
+  const token = props.token || localStorage.getItem("token");
+  const [loginFormModal, setLoginFormModal] = useState(false);
   //   const [cartState, setCartState] = useState(cartStateTemp);
   return (
     <Row gutter={16} justify="space-around">
@@ -61,8 +65,27 @@ const Cart = (props) => {
             )}
             footer={[
               <h3>Total Amount: {cartState.order.amount}</h3>,
-              <Button type="primary">Checkout</Button>,
+              <Button
+                type="primary"
+                onClick={() => {
+                  if (token) {
+                    console.log("perform checkout");
+                  } else {
+                    setLoginFormModal(true);
+                  }
+                }}
+              >
+                Checkout
+              </Button>,
             ]}
+          />
+          <GenForm
+            title="Login"
+            end="login"
+            type={0}
+            visibility={loginFormModal}
+            onCancel={() => setLoginFormModal(!loginFormModal)}
+            onLoggedIn={(token) => props.onLoggedIn(token, 0)}
           />
         </Col>
       ) : (
