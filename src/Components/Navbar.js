@@ -57,7 +57,10 @@ const Navbar = (props) => {
         title="Login"
         end="login"
         type={0}
-        setCartState={(cart) => props.setCartState(cart)}
+        setCartState={() => {
+          console.log("nav");
+          props.setCartState();
+        }}
         visibility={loginState}
         onCancel={() => setLoginState(!loginState)}
         onLoggedIn={(token) => props.onLoggedIn(token, 0)}

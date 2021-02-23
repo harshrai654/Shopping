@@ -34,7 +34,7 @@ const Cart = (props) => {
                           (value - items[index].quantity) * product.price;
                         items[index].quantity = value;
                         props.setCartState({ items, order });
-                        utils.updateCart({ items, order });
+                        utils.updateCart(items, order, props.tokenData);
                       }}
                     />
                     <h5>X{product.price}</h5>
@@ -50,7 +50,7 @@ const Cart = (props) => {
                       order.amount -= product.quantity * product.price;
 
                       props.setCartState({ items, order });
-                      utils.updateCart({ items, order });
+                      utils.updateCart(items, order, props.tokenData);
                     }}
                   >
                     Delete
@@ -83,6 +83,7 @@ const Cart = (props) => {
             title="Login"
             end="login"
             type={0}
+            setCartState={() => props.setCartState()}
             visibility={loginFormModal}
             onCancel={() => setLoginFormModal(!loginFormModal)}
             onLoggedIn={(token) => props.onLoggedIn(token, 0)}

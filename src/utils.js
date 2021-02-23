@@ -5,9 +5,15 @@ const utils = {
     let cart = localStorage.getItem("cart");
     if (cart) {
       cart = JSON.parse(cart);
-      data = { ...data, cart };
+      let cartData = {};
+      cart.forEach((item) => {
+        const { _id, quantity } = item;
+        cartData[_id] = quantity;
+      });
+
+      data = { ...data, cart: cartData };
     } else {
-      data = { ...data, cart: { items: [], order: { amount: 0 } } };
+      data = { ...data, cart: {} };
     }
     return axios.post(`/auth/${end}`, data);
   },
@@ -18,7 +24,8 @@ const utils = {
   removeToken: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("type");
-    localStorage.removeItem("cart");
+    localStorage.setItem("cart", JSON.stringify([]));
+    localStorage.setItem("order", JSON.stringify({ amount: 0 }));
   },
   auth: async () => {
     const token = localStorage.getItem("token");
@@ -58,19 +65,42 @@ const utils = {
       .then((res) => res.data)
       .catch((err) => console.error(err)),
 
-  updateCart: (cart, tokenData) => {
+  updateCart: (cart, order, tokenData) => {
+    tokenData = tokenData ? tokenData : localStorage.getItem("token");
+
     localStorage.setItem("cart", JSON.stringify(cart));
+    if (!order) {
+      let amount = 0;
+      cart.forEach((item) => (amount += item.quantity * item.price));
+      localStorage.setItem("order", JSON.stringify({ amount: amount }));
+    } else localStorage.setItem("order", JSON.stringify(order));
     if (tokenData) {
-      return axios.post("/customer/cart", cart, {
-        headers: {
-          Authorization: "Bearer " + tokenData.token,
-        },
-      });
+      tokenData = tokenData.token ? tokenData.token : tokenData;
+      if (cart) {
+        let cartData = {};
+        cart.forEach((item) => {
+          const { _id, quantity } = item;
+          cartData[_id] = quantity;
+        });
+
+        return axios.post(
+          "/customer/cart",
+          { cart: cartData },
+          {
+            headers: {
+              Authorization: "Bearer " + tokenData,
+            },
+          }
+        );
+      }
     }
   },
 
   getCartState: () => {
-    return localStorage.getItem("cart");
+    return {
+      items: JSON.parse(localStorage.getItem("cart")) || [],
+      order: JSON.parse(localStorage.getItem("order")) || { amount: 0 },
+    };
   },
 };
 

@@ -14,10 +14,7 @@ const Home = () => {
     type: parseInt(localStorage.getItem("type")),
   });
 
-  let prevCart = localStorage.getItem("cart");
-  prevCart = prevCart
-    ? JSON.parse(prevCart)
-    : { items: [], order: { amount: 0 } };
+  let prevCart = utils.getCartState();
   const [cartState, setCartState] = useState(prevCart);
   const [cartUpdate, setCartUpdate] = useState(0);
 
@@ -30,7 +27,11 @@ const Home = () => {
       <Row>
         <Navbar
           cartState={cartState}
-          setCartState={(cart) => setCartState(cart)}
+          setCartState={() => {
+            let cartState = utils.getCartState();
+            console.log(cartState);
+            setCartState(cartState);
+          }}
           token={tokenData ? tokenData.token : null}
           type={tokenData ? tokenData.type : 0}
           onLoggedIn={(token, type) => setToken({ token, type })}
@@ -80,7 +81,7 @@ const Home = () => {
                     order.amount += product.quantity * product.price;
 
                     setCartState({ items, order });
-                    utils.updateCart({ items, order }, tokenData);
+                    utils.updateCart(items, order, tokenData);
                     setCartUpdate(1);
                   }
                 }}
@@ -91,7 +92,7 @@ const Home = () => {
           <Route path="/cart" exact>
             <Cart
               cartState={cartState}
-              setCartState={setCartState}
+              setCartState={() => setCartState(utils.getCartState())}
               tokenData={tokenData}
               onLoggedIn={(token, type) => setToken({ token, type })}
             />
