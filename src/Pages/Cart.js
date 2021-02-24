@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Redirect } from "react-router-dom";
 import { Row, Col, List, InputNumber, Space, Button } from "antd";
 import utils from "../utils";
 import GenForm from "../Components/GenForm";
@@ -8,9 +9,11 @@ const Cart = (props) => {
     utils.getCartState() || { items: [], order: { amount: 0 } };
   const token = props.token || localStorage.getItem("token");
   const [loginFormModal, setLoginFormModal] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(0);
   //   const [cartState, setCartState] = useState(cartStateTemp);
   return (
     <Row gutter={16} justify="space-around">
+      {orderSuccess && <Redirect to={{ path: "/", state: { orderSuccess } }} />}
       {cartState.items.length ? (
         <Col offset={2} span={24}>
           <List
@@ -69,7 +72,25 @@ const Cart = (props) => {
                 type="primary"
                 onClick={() => {
                   if (token) {
-                    console.log("perform checkout");
+                    utils
+                      .checkout(cartState, token)
+                      .then((res) => {
+                        console.log(res.data);
+                        props.updateCart(res.data.cart);
+                        localStorage.setItem(
+                          "cart",
+                          JSON.stringify(res.data.cart.items)
+                        );
+                        localStorage.setItem(
+                          "order",
+                          JSON.stringify(res.data.cart.order)
+                        );
+                        setOrderSuccess(1);
+                      })
+                      .catch((err) => {
+                        console.error(err);
+                        setOrderSuccess(0);
+                      });
                   } else {
                     setLoginFormModal(true);
                   }

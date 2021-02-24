@@ -62,7 +62,7 @@ const Home = () => {
       <Row>
         <Switch>
           <Route path="/seller" exact>
-            <SellerDashboard />
+            <SellerDashboard tokenData={tokenData} />
           </Route>
           <Route path="/" exact>
             <ProductsGrid />

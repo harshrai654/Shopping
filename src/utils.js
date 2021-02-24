@@ -102,6 +102,46 @@ const utils = {
       order: JSON.parse(localStorage.getItem("order")) || { amount: 0 },
     };
   },
+
+  getProductList: (tokenData) =>
+    axios.get("/seller/list", {
+      headers: {
+        Authorization: "Bearer " + tokenData.token,
+      },
+    }),
+
+  updateProduct: (product, tokenData) =>
+    axios.post(
+      "/seller/update",
+      { product },
+      {
+        headers: {
+          Authorization: "Bearer " + tokenData.token,
+        },
+      }
+    ),
+
+  checkout: (cart, token) => {
+    const smallCart = cart.items.map((cartItem) => {
+      const { _id, stock, quantity, price, sellerId } = cartItem;
+      return {
+        _id,
+        stock,
+        quantity,
+        price,
+        sellerId,
+      };
+    });
+    return axios.post(
+      "/customer/checkout",
+      { cart: smallCart, order: cart.order },
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+  },
 };
 
 export default utils;

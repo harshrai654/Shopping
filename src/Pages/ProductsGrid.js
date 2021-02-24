@@ -1,4 +1,4 @@
-import { Spin, Row, Col, Card } from "antd";
+import { Spin, Row, Col, Card, Alert } from "antd";
 import { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import utils from "../utils";
@@ -18,7 +18,7 @@ const ProductCard = (props) => {
   );
 };
 
-const ProductsGrid = () => {
+const ProductsGrid = (props) => {
   const [products, setProductsState] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(false);
 
@@ -40,6 +40,13 @@ const ProductsGrid = () => {
         />
       ) : (
         <Row align="middle" justify="center" gutter={16}>
+          {props.location && props.location.state.orderSuccess && (
+            <Alert
+              type="success"
+              message="Order placed successfully!"
+              closable
+            />
+          )}
           {products ? (
             products.map((product) => (
               <Col className="gutter-row">
