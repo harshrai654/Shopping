@@ -2,11 +2,13 @@ import { useState } from "react";
 import { PageHeader, Button, Badge, Typography } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import GenForm from "./GenForm";
+import RegisterFrom from "./RegisterForm";
 import { Link } from "react-router-dom";
 
 const { Text } = Typography;
 
 const Navbar = (props) => {
+  const [registerFormState, setRegisterFormState] = useState(0);
   const [loginState, setLoginState] = useState(false);
   const [sellerLoginState, setSellerLoginState] = useState(false);
   const [uname, setUname] = useState(localStorage.getItem("uname"));
@@ -63,22 +65,37 @@ const Navbar = (props) => {
         title="Login"
         end="login"
         type={0}
+        changeFormState={() => {
+          setRegisterFormState(1);
+          setLoginState(false);
+        }}
         setUname={(uname) => setUname(uname)}
         setCartState={() => {
-          console.log("nav");
           props.setCartState();
         }}
-        visibility={loginState}
+        visibility={loginState && !registerFormState}
         onCancel={() => setLoginState(!loginState)}
         onLoggedIn={(token) => props.onLoggedIn(token, 0)}
       />
       <GenForm
         title="Seller Login"
         end="sellerlogin"
+        changeFormState={() => {
+          setRegisterFormState(1);
+          setSellerLoginState(false);
+        }}
         type={1}
-        visibility={sellerLoginState}
+        visibility={sellerLoginState && !registerFormState}
         onCancel={() => setSellerLoginState(!sellerLoginState)}
         onLoggedIn={(token) => props.onLoggedIn(token, 1)}
+      />
+
+      <RegisterFrom
+        title="Register"
+        setUname={(uname) => setUname(uname)}
+        onCancel={() => setRegisterFormState(0)}
+        onLoggedIn={(token, type) => props.onLoggedIn(token, type)}
+        visibility={registerFormState && !loginState && !sellerLoginState}
       />
     </>
   );

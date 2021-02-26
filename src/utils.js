@@ -24,6 +24,7 @@ const utils = {
   removeToken: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("type");
+    localStorage.removeItem("uname");
     localStorage.setItem("cart", JSON.stringify([]));
     localStorage.setItem("order", JSON.stringify({ amount: 0 }));
   },
@@ -168,6 +169,11 @@ const utils = {
       { status, orderId, customerId },
       { headers: { Authorization: "Bearer " + tokenData.token } }
     ),
+
+  register: (values) => {
+    console.log(values);
+    return axios.post("/register", { values });
+  },
 };
 
 export default utils;

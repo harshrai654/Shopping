@@ -1,5 +1,5 @@
-import React from "react";
-import { Modal, Form, Input, Alert } from "antd";
+import React, { useState } from "react";
+import { Modal, Form, Input, Alert, Button } from "antd";
 import utils from "../utils";
 
 const GenForm = (props) => {
@@ -79,6 +79,9 @@ const GenForm = (props) => {
             <Input.Password />
           </Form.Item>
         </Form>
+        <Button type="text" onClick={props.changeFormState}>
+          Register
+        </Button>
       </Modal>
     </>
   );

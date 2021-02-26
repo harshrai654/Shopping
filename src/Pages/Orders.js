@@ -14,8 +14,8 @@ const Orders = (props) => {
   useEffect(() => {
     if (!props.location) {
       utils.getOrders(props.tokenData).then((res) => {
-        console.log(res.data);
-        if (res.status === 403) {
+        console.log(res.status);
+        if (res.status !== 200) {
           setOrder(0);
         } else {
           console.log(res.data);
