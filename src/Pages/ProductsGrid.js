@@ -40,13 +40,13 @@ const ProductsGrid = (props) => {
         />
       ) : (
         <Row align="middle" justify="center" gutter={16}>
-          {props.location && props.location.state.orderSuccess && (
+          {/* {props.location && props.location.state.orderSuccess && (
             <Alert
               type="success"
               message="Order placed successfully!"
               closable
             />
-          )}
+          )} */}
           {products ? (
             products.map((product) => (
               <Col className="gutter-row">

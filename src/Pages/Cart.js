@@ -5,15 +5,18 @@ import utils from "../utils";
 import GenForm from "../Components/GenForm";
 
 const Cart = (props) => {
+  props.setCartUpdate(0);
   let cartState = props.cartState ||
     utils.getCartState() || { items: [], order: { amount: 0 } };
   const token = props.token || localStorage.getItem("token");
   const [loginFormModal, setLoginFormModal] = useState(false);
-  const [orderSuccess, setOrderSuccess] = useState(0);
+  const [order, setOrder] = useState([]);
   //   const [cartState, setCartState] = useState(cartStateTemp);
   return (
     <Row gutter={16} justify="space-around">
-      {orderSuccess && <Redirect to={{ path: "/", state: { orderSuccess } }} />}
+      {order && order.length && (
+        <Redirect to={{ path: "/orders", state: { order } }} />
+      )}
       {cartState.items.length ? (
         <Col offset={2} span={24}>
           <List
@@ -75,7 +78,7 @@ const Cart = (props) => {
                     utils
                       .checkout(cartState, token)
                       .then((res) => {
-                        console.log(res.data);
+                        // console.log(res.data);
                         props.updateCart(res.data.cart);
                         localStorage.setItem(
                           "cart",
@@ -85,11 +88,11 @@ const Cart = (props) => {
                           "order",
                           JSON.stringify(res.data.cart.order)
                         );
-                        setOrderSuccess(1);
+                        setOrder(res.data.orders);
                       })
                       .catch((err) => {
                         console.error(err);
-                        setOrderSuccess(0);
+                        setOrder([]);
                       });
                   } else {
                     setLoginFormModal(true);

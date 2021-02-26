@@ -7,6 +7,7 @@ import SellerDashboard from "./SellerDashboard";
 import ProductsGrid from "./ProductsGrid";
 import ProductPage from "./ProductPage";
 import Cart from "./Cart";
+import Orders from "./Orders";
 
 const Home = () => {
   const [tokenData, setToken] = useState({
@@ -95,8 +96,12 @@ const Home = () => {
               updateCart={(cart) => setCartState(cart)}
               setCartState={() => setCartState(utils.getCartState())}
               tokenData={tokenData}
+              setCartUpdate={(state) => setCartUpdate(state)}
               onLoggedIn={(token, type) => setToken({ token, type })}
             />
+          </Route>
+          <Route path="/orders">
+            <Orders tokenData={tokenData} />
           </Route>
         </Switch>
       </Row>

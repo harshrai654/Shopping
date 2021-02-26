@@ -33,6 +33,8 @@ const GenForm = (props) => {
                     props.onLoggedIn(res.data.token);
                     utils.saveToken(res.data.token, props.type);
                     if (!props.type) {
+                      localStorage.setItem("uname", res.data.uname);
+                      props.setUname(res.data.uname);
                       utils.updateCart(res.data.cart, null, res.data.token);
                       props.setCartState();
                     }

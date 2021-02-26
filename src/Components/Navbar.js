@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { PageHeader, Button, Badge } from "antd";
+import { PageHeader, Button, Badge, Typography } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import GenForm from "./GenForm";
 import { Link } from "react-router-dom";
 
+const { Text } = Typography;
+
 const Navbar = (props) => {
   const [loginState, setLoginState] = useState(false);
   const [sellerLoginState, setSellerLoginState] = useState(false);
+  const [uname, setUname] = useState(localStorage.getItem("uname"));
 
   const loginActions = props.token
     ? [
@@ -22,6 +25,9 @@ const Navbar = (props) => {
             <ShoppingCartOutlined style={{ fontSize: "24px" }} />
           </Badge>
         </Link>,
+        <Text strong>{`Hey, ${uname}`}</Text>,
+
+        <Link to="/orders">Orders</Link>,
       ]
     : [
         <Button onClick={() => setLoginState(!loginState)} type="text" key="0">
@@ -44,7 +50,7 @@ const Navbar = (props) => {
           </Badge>
         </Link>,
       ];
-  props.token && props.type && loginActions.splice(1, 1);
+  props.token && props.type && loginActions.splice(1, 3);
   return (
     <>
       <PageHeader
@@ -57,6 +63,7 @@ const Navbar = (props) => {
         title="Login"
         end="login"
         type={0}
+        setUname={(uname) => setUname(uname)}
         setCartState={() => {
           console.log("nav");
           props.setCartState();

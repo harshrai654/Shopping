@@ -142,6 +142,32 @@ const utils = {
       }
     );
   },
+
+  getOrders: (tokenData) => {
+    const tokenObj = tokenData || {
+      token: localStorage.getItem("token"),
+      type: localStorage.getItem("type"),
+    };
+
+    if (tokenObj.type) {
+      return axios.get("/seller/orders", {
+        headers: {
+          Authorization: "Bearer " + tokenObj.token,
+        },
+      });
+    }
+    return axios.get("/customer/orders", {
+      headers: {
+        Authorization: "Bearer " + tokenObj.token,
+      },
+    });
+  },
+  updateOrderStatus: (tokenData, status, orderId, customerId) =>
+    axios.post(
+      "/seller/orderupdate",
+      { status, orderId, customerId },
+      { headers: { Authorization: "Bearer " + tokenData.token } }
+    ),
 };
 
 export default utils;

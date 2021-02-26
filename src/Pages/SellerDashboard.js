@@ -4,11 +4,13 @@ import { Row, Col, Button, Divider } from "antd";
 import utils from "../utils";
 import NewProduct from "../Components/NewProduct";
 import ProductsAdded from "../Components/ProductsAdded";
+import Orders from "./Orders";
 
 const SellerDashboard = (props) => {
   const [sellerData, setSelllerData] = useState(1);
   const [productShow, setProductShow] = useState(false);
   const [productListShow, setProductListShow] = useState(false);
+  const [orderListShow, setOrderListShow] = useState(false);
 
   useEffect(() => {
     utils
@@ -36,6 +38,7 @@ const SellerDashboard = (props) => {
                   onClick={() => {
                     setProductShow(true);
                     setProductListShow(false);
+                    setOrderListShow(false);
                   }}
                   type={productShow ? "primary" : "dashed"}
                 >
@@ -46,17 +49,37 @@ const SellerDashboard = (props) => {
                   onClick={() => {
                     setProductShow(false);
                     setProductListShow(true);
+                    setOrderListShow(false);
                   }}
                 >
                   Show Products
                 </Button>
+                <Button
+                  type={orderListShow ? "primary" : "dashed"}
+                  onClick={() => {
+                    setProductShow(false);
+                    setProductListShow(false);
+                    setOrderListShow(true);
+                  }}
+                >
+                  Show Orders
+                </Button>
               </Col>
-              <Col flex={2}>{productShow && <NewProduct />}</Col>
-              <Col flex={2}>
-                {productListShow && (
+              {productShow && (
+                <Col flex={2}>
+                  <NewProduct />
+                </Col>
+              )}
+              {productListShow && (
+                <Col flex={2}>
                   <ProductsAdded tokenData={props.tokenData} />
-                )}
-              </Col>
+                </Col>
+              )}
+              {orderListShow && (
+                <Col>
+                  <Orders tokenData={props.tokenData} />
+                </Col>
+              )}
             </Row>
           </div>
         )
