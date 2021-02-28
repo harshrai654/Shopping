@@ -1,5 +1,13 @@
 import { Spin } from "antd";
-import { PieChart, Pie, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  Bar,
+} from "recharts";
 import { Redirect } from "react-router-dom";
 import { useEffect, useState } from "react";
 import utils from "../utils";
@@ -10,11 +18,11 @@ const Analytics = (props) => {
   const productData = [];
   if (Array.isArray(orders)) {
     orders.forEach((order) => {
-      const pr = productData.find((product) => product.name === order._id);
+      const pr = productData.find((product) => product.Product === order.pname);
       if (pr) {
-        pr.value += order.quantity;
+        pr.Units += order.quantity;
       } else {
-        productData.push({ name: order._id, value: 1 });
+        productData.push({ Product: order.pname, Units: 1 });
       }
     });
   }
@@ -22,7 +30,7 @@ const Analytics = (props) => {
   console.log(productData);
 
   useEffect(() => {
-    if (!orders) {
+    if (orders === -1) {
       utils
         .getOrders(props.tokenData)
         .then((res) => {
@@ -46,19 +54,25 @@ const Analytics = (props) => {
       {orders === 0 && <Redirect to="/" />}
       {Array.isArray(orders) && (
         // <ResponsiveContainer width="100%" height="100%">
-        <PieChart width={400} height={400}>
-          <Pie
-            dataKey="value"
-            startAngle={180}
-            endAngle={0}
-            data={productData}
-            cx="50%"
-            cy="50%"
-            outerRadius={80}
-            fill="#8884d8"
-            label
-          />
-        </PieChart>
+        <BarChart
+          width={800}
+          height={500}
+          data={productData}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="Product" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="Units" fill="#8884d8" />
+          {/* <Bar dataKey="uv" fill="#82ca9d" /> */}
+        </BarChart>
         // </ResponsiveContainer>
       )}
     </>

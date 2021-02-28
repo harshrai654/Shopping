@@ -1,4 +1,4 @@
-import { Spin, Row, Col, Card, Button, Drawer, Alert } from "antd";
+import { Spin, Row, Col, Card, Button, Drawer, Alert, Input } from "antd";
 import { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import utils from "../utils";
@@ -29,6 +29,8 @@ const ProductsGrid = (props) => {
   const [selectedProduct, setSelectedProduct] = useState(false);
   const [category, setCategory] = useState("all");
   const [showCategory, setShowCategory] = useState(false);
+  const [searchState, setSearchState] = useState("");
+
   const allCategories = new Set();
   allCategories.add("all");
   products.forEach((pro) => allCategories.add(pro.category));
@@ -74,6 +76,16 @@ const ProductsGrid = (props) => {
                 </Button>
               ))}
             </Drawer>
+            <Col offset={15}>
+              <Input.Search
+                onChange={(event) => {
+                  const searchKey = event.target.value;
+                  if (searchKey !== searchState) {
+                    setSearchState(searchKey.toLowerCase());
+                  }
+                }}
+              />
+            </Col>
           </Row>
 
           <Row justify="center" gutter={4}>
@@ -88,7 +100,9 @@ const ProductsGrid = (props) => {
             {products ? (
               products.map(
                 (product) =>
-                  (category === "all" || product.category === category) && (
+                  (category === "all" || product.category === category) &&
+                  (!searchState ||
+                    product.pname.toLowerCase().includes(searchState)) && (
                     <Col>
                       <ProductCard
                         product={product}
