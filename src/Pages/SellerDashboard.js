@@ -5,12 +5,15 @@ import utils from "../utils";
 import NewProduct from "../Components/NewProduct";
 import ProductsAdded from "../Components/ProductsAdded";
 import Orders from "./Orders";
+import Analytics from "../Components/Analytics";
 
 const SellerDashboard = (props) => {
   const [sellerData, setSelllerData] = useState(1);
+
   const [productShow, setProductShow] = useState(false);
   const [productListShow, setProductListShow] = useState(false);
   const [orderListShow, setOrderListShow] = useState(false);
+  const [showAnalytics, setshowAnalytics] = useState(false);
 
   useEffect(() => {
     utils
@@ -26,19 +29,21 @@ const SellerDashboard = (props) => {
   }, []);
   return (
     <>
+      {!props.tokenData.token && <Redirect to="/" />}
       {sellerData ? (
         sellerData === 1 ? (
           <h3>Loading...</h3>
         ) : (
           <div>
-            <Row gutter={24} justify="space-around" align="top">
+            <Row gutter={6} align="top">
               <Divider orientation="left">{sellerData.name}</Divider>
-              <Col offset={1} flex={1}>
+              <Col span={8}>
                 <Button
                   onClick={() => {
                     setProductShow(true);
                     setProductListShow(false);
                     setOrderListShow(false);
+                    setshowAnalytics(false);
                   }}
                   type={productShow ? "primary" : "dashed"}
                 >
@@ -50,6 +55,7 @@ const SellerDashboard = (props) => {
                     setProductShow(false);
                     setProductListShow(true);
                     setOrderListShow(false);
+                    setshowAnalytics(false);
                   }}
                 >
                   Show Products
@@ -60,26 +66,31 @@ const SellerDashboard = (props) => {
                     setProductShow(false);
                     setProductListShow(false);
                     setOrderListShow(true);
+                    setshowAnalytics(false);
                   }}
                 >
                   Show Orders
                 </Button>
+                <Button
+                  type={showAnalytics ? "primary" : "dashed"}
+                  onClick={() => {
+                    setProductShow(false);
+                    setProductListShow(false);
+                    setOrderListShow(false);
+                    setshowAnalytics(true);
+                  }}
+                >
+                  Analytics
+                </Button>
               </Col>
-              {productShow && (
-                <Col flex={2}>
-                  <NewProduct />
-                </Col>
-              )}
-              {productListShow && (
-                <Col flex={2}>
+              <Col span={10}>
+                {productShow && <NewProduct />}
+                {productListShow && (
                   <ProductsAdded tokenData={props.tokenData} />
-                </Col>
-              )}
-              {orderListShow && (
-                <Col>
-                  <Orders tokenData={props.tokenData} />
-                </Col>
-              )}
+                )}
+                {orderListShow && <Orders tokenData={props.tokenData} />}
+                {showAnalytics && <Analytics tokenData={props.tokenData} />}
+              </Col>
             </Row>
           </div>
         )

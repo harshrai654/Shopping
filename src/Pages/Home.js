@@ -18,6 +18,7 @@ const Home = () => {
   let prevCart = utils.getCartState();
   const [cartState, setCartState] = useState(prevCart);
   const [cartUpdate, setCartUpdate] = useState(0);
+  const [uname, setUname] = useState(localStorage.getItem("uname"));
 
   return (
     <>
@@ -27,6 +28,8 @@ const Home = () => {
       )}
       <Row>
         <Navbar
+          uname={uname}
+          setUname={(uname) => setUname(uname)}
           cartState={cartState}
           setCartState={() => {
             let cartState = utils.getCartState();
@@ -39,7 +42,7 @@ const Home = () => {
           onLogOut={() => {
             utils.removeToken();
             setCartState({ items: [], order: { amount: 0 } });
-            setToken(null);
+            setToken({ token: null, type: 0 });
           }}
         />
         {cartUpdate === -1 && (
@@ -60,51 +63,52 @@ const Home = () => {
         )}
         <Divider />
       </Row>
-      <Row>
-        <Switch>
-          <Route path="/seller" exact>
-            <SellerDashboard tokenData={tokenData} />
-          </Route>
-          <Route path="/" exact>
-            <ProductsGrid />
-          </Route>
-          <Route
-            path="/product"
-            exact
-            render={(props) => (
-              <ProductPage
-                updateCart={(product) => {
-                  if (cartState.items.find((e) => product._id === e._id)) {
-                    setCartUpdate(-1);
-                  } else {
-                    let items = [...cartState.items, product];
-                    let order = cartState.order;
-                    order.amount += product.quantity * product.price;
 
-                    setCartState({ items, order });
-                    utils.updateCart(items, order, tokenData);
-                    setCartUpdate(1);
-                  }
-                }}
-                {...props}
-              />
-            )}
-          />
-          <Route path="/cart" exact>
-            <Cart
-              cartState={cartState}
-              updateCart={(cart) => setCartState(cart)}
-              setCartState={() => setCartState(utils.getCartState())}
-              tokenData={tokenData}
-              setCartUpdate={(state) => setCartUpdate(state)}
-              onLoggedIn={(token, type) => setToken({ token, type })}
+      <Switch>
+        <Route path="/seller" exact>
+          <SellerDashboard tokenData={tokenData} />
+        </Route>
+        <Route path="/" exact>
+          <ProductsGrid />
+        </Route>
+        <Route
+          path="/product"
+          exact
+          render={(props) => (
+            <ProductPage
+              updateCart={(product) => {
+                if (cartState.items.find((e) => product._id === e._id)) {
+                  setCartUpdate(-1);
+                } else {
+                  let items = [...cartState.items, product];
+                  let order = cartState.order;
+                  order.amount += product.quantity * product.price;
+
+                  setCartState({ items, order });
+                  utils.updateCart(items, order, tokenData);
+                  setCartUpdate(1);
+                }
+              }}
+              {...props}
             />
-          </Route>
-          <Route path="/orders">
-            <Orders tokenData={tokenData} />
-          </Route>
-        </Switch>
-      </Row>
+          )}
+        />
+        <Route path="/cart" exact>
+          <Cart
+            uname={uname}
+            setUname={(uname) => setUname(uname)}
+            cartState={cartState}
+            updateCart={(cart) => setCartState(cart)}
+            setCartState={() => setCartState(utils.getCartState())}
+            tokenData={tokenData}
+            setCartUpdate={(state) => setCartUpdate(state)}
+            onLoggedIn={(token, type) => setToken({ token, type })}
+          />
+        </Route>
+        <Route path="/orders">
+          <Orders tokenData={tokenData} />
+        </Route>
+      </Switch>
     </>
   );
 };

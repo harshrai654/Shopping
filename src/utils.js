@@ -27,6 +27,7 @@ const utils = {
     localStorage.removeItem("uname");
     localStorage.setItem("cart", JSON.stringify([]));
     localStorage.setItem("order", JSON.stringify({ amount: 0 }));
+    localStorage.removeItem("orders");
   },
   auth: async () => {
     const token = localStorage.getItem("token");
@@ -174,6 +175,8 @@ const utils = {
     console.log(values);
     return axios.post("/register", { values });
   },
+
+  getCategories: () => axios.get("/api/categories"),
 };
 
 export default utils;

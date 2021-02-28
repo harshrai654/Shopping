@@ -13,12 +13,12 @@ const Cart = (props) => {
   const [order, setOrder] = useState([]);
   //   const [cartState, setCartState] = useState(cartStateTemp);
   return (
-    <Row gutter={16} justify="space-around">
+    <Row gutter={16} justify="center">
       {order && order.length && (
         <Redirect to={{ path: "/orders", state: { order } }} />
       )}
       {cartState.items.length ? (
-        <Col offset={2} span={24}>
+        <Col span={18}>
           <List
             size="large"
             header={<h2>Cart</h2>}
@@ -107,6 +107,7 @@ const Cart = (props) => {
             title="Login"
             end="login"
             type={0}
+            setUname={(uname) => props.setUname(uname)}
             setCartState={() => props.setCartState()}
             visibility={loginFormModal}
             onCancel={() => setLoginFormModal(!loginFormModal)}

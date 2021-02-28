@@ -11,7 +11,6 @@ const Navbar = (props) => {
   const [registerFormState, setRegisterFormState] = useState(0);
   const [loginState, setLoginState] = useState(false);
   const [sellerLoginState, setSellerLoginState] = useState(false);
-  const [uname, setUname] = useState(localStorage.getItem("uname"));
 
   const loginActions = props.token
     ? [
@@ -27,7 +26,7 @@ const Navbar = (props) => {
             <ShoppingCartOutlined style={{ fontSize: "24px" }} />
           </Badge>
         </Link>,
-        <Text strong>{`Hey, ${uname}`}</Text>,
+        <Text strong>{`Hey, ${props.uname}`}</Text>,
 
         <Link to="/orders">Orders</Link>,
       ]
@@ -69,7 +68,7 @@ const Navbar = (props) => {
           setRegisterFormState(1);
           setLoginState(false);
         }}
-        setUname={(uname) => setUname(uname)}
+        setUname={(uname) => props.setUname(uname)}
         setCartState={() => {
           props.setCartState();
         }}
@@ -92,7 +91,7 @@ const Navbar = (props) => {
 
       <RegisterFrom
         title="Register"
-        setUname={(uname) => setUname(uname)}
+        setUname={(uname) => props.setUname(uname)}
         onCancel={() => setRegisterFormState(0)}
         onLoggedIn={(token, type) => props.onLoggedIn(token, type)}
         visibility={registerFormState && !loginState && !sellerLoginState}

@@ -9,24 +9,39 @@ const { Panel } = Collapse;
 const { Option } = Select;
 
 const Orders = (props) => {
-  const temp = props.location ? props.location.state.order : -1;
+  const savedOrders = JSON.parse(localStorage.getItem("orders"));
+  const temp = props.location
+    ? props.location.state.order
+    : savedOrders
+    ? savedOrders
+    : -1;
   const [order, setOrder] = useState(temp);
   useEffect(() => {
     if (!props.location) {
-      utils.getOrders(props.tokenData).then((res) => {
-        console.log(res.status);
-        if (res.status !== 200) {
+      utils
+        .getOrders(props.tokenData)
+        .then((res) => {
+          console.log(res.status);
+          if (res.status !== 200) {
+            setOrder(0);
+          } else {
+            res.data.sort((fp, sp) => {
+              if (fp.delivered && !sp.delivered) return 1;
+              return -1;
+            });
+            console.log(res.data);
+            setOrder(res.data);
+            localStorage.setItem("orders", JSON.stringify(res.data));
+          }
+        })
+        .catch((err) => {
           setOrder(0);
-        } else {
-          console.log(res.data);
-          setOrder(res.data);
-        }
-      });
+        });
     }
   }, [props.tokenData, props.location]);
   return (
-    <Row gutter={16}>
-      <Col offset={2} span={24}>
+    <Row gutter={16} justify="center">
+      <Col span={16}>
         {order === -1 && <Spin />}
         {order === 0 && <Redirect to="/" />}
         {Array.isArray(order) && (
@@ -36,7 +51,7 @@ const Orders = (props) => {
             dataSource={order}
             renderItem={(orderItem) => (
               <List.Item
-                key={orderItem._id}
+                key={orderItem.orderId}
                 extra={[
                   <img width={100} alt="product" src={orderItem.imgUrls[0]} />,
                 ]}

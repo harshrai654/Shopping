@@ -1,10 +1,19 @@
-import { Row, Col, Carousel, Image, Button, Form, InputNumber } from "antd";
+import {
+  Row,
+  Col,
+  Carousel,
+  Image,
+  Button,
+  Form,
+  InputNumber,
+  Descriptions,
+} from "antd";
 
 const ProductPage = (props) => {
   const product = props.location.state.product;
   return (
-    <Row gutter={24}>
-      <Col flex={3} offset={1}>
+    <Row justify="space-around">
+      <Col span={10}>
         <Carousel dotPosition="left" effect="fade" autoplay>
           {product.imgUrls &&
             product.imgUrls.map((img) => (
@@ -13,8 +22,6 @@ const ProductPage = (props) => {
               </div>
             ))}
         </Carousel>
-      </Col>
-      <Col flex={1} offset={1}>
         <Form
           onFinish={(values) => {
             let quantity = values.quantity ? values.quantity : 1;
@@ -34,6 +41,12 @@ const ProductPage = (props) => {
             <InputNumber min={1} max={product.quantity} defaultValue={1} />
           </Form.Item>
         </Form>
+      </Col>
+
+      <Col span={12}>
+        <Descriptions title="Product Desciption">
+          <Descriptions.Item>{product.desc}</Descriptions.Item>
+        </Descriptions>
       </Col>
     </Row>
   );

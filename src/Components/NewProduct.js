@@ -7,10 +7,17 @@ import {
   Modal,
   Button,
   Alert,
+  Select,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import utils from "../utils";
+
+const { Option } = Select;
+const catCode = {
+  lap: "Laptops",
+  mob: "Mobiles",
+};
 
 const getStatusComponent = (status) => {
   switch (status) {
@@ -63,6 +70,15 @@ const NewProduct = () => {
 
   const [fileList, setFileState] = useState([]);
   const [status, setStatus] = useState(-1);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    utils
+      .getCategories()
+      .then((res) => setCategories(res.data.cats))
+      .catch((err) => setCategories([]));
+  });
+
   return (
     <Form
       layout="vertical"
@@ -99,6 +115,18 @@ const NewProduct = () => {
         ]}
       >
         <Input />
+      </Form.Item>
+      <Form.Item
+        name="category"
+        label="Category"
+        hasFeedback
+        rules={[{ required: true, message: "Please select a category!" }]}
+      >
+        <Select placeholder="Select Product Category">
+          {categories.map((cat) => (
+            <Option value={cat}>{catCode[cat]}</Option>
+          ))}
+        </Select>
       </Form.Item>
       <Form.Item
         label="Price ₹"
